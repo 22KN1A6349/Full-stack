@@ -1,0 +1,46 @@
+import { useEffect, useState } from "react";
+import { getTodos, createTodo, updateTodo, deleteTodo } from "./services/api";
+import TodoList from "./components/TodoList";
+import TodoForm from "./components/TodoForm";
+
+function App() {
+  const [todos, setTodos] = useState([]);
+
+  const loadTodos = async () => {
+    const response = await getTodos();
+    setTodos(response.data);
+  };
+
+  useEffect(() => {
+    loadTodos();
+  }, []);
+
+  const handleAdd = async (todo) => {
+    await createTodo(todo);
+    loadTodos();
+  };
+
+  const handleUpdate = async (id, updated) => {
+    await updateTodo(id, updated);
+    loadTodos();
+  };
+
+  const handleDelete = async (id) => {
+    await deleteTodo(id);
+    loadTodos();
+  };
+
+  return (
+    <div style={{ width: "500px", margin: "auto" }}>
+      <h2>Todo App</h2>
+      <TodoForm onAdd={handleAdd} />
+      <TodoList
+        todos={todos}
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+      />
+    </div>
+  );
+}
+
+export default App;
